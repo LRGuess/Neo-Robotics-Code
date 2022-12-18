@@ -27,7 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
+
+import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -38,14 +40,16 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.GregorianCalendar;
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear Opmode")
-@Disabled
+
+@TeleOp(name="TeleOP", group="Linear Opmode")
 public class BasicOmniOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
 
 
+    @SuppressLint("SuspiciousIndentation")
     @Override
     public void runOpMode() {
 
@@ -64,6 +68,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
         DigitalChannel centerTouchSensor;
 
+        //region Hardware Mapping and Mode/Direction Setting
         greenMotor = hardwareMap.get (DcMotor.class, "greenMotor");
         blackMotor = hardwareMap.get (DcMotor.class, "blackMotor");
         armMotor = hardwareMap.get (DcMotor.class, "armMotor");
@@ -71,19 +76,22 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         leftHandServo = hardwareMap.get (Servo.class, "leftHandServo");
         centerTouchSensor = hardwareMap.get (DigitalChannel.class, "centerTouchSensor");
 
-        greenMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        blackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        greenMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        blackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         centerTouchSensor.setMode(DigitalChannel.Mode.INPUT);
+        //endregion
 
         //region telemetry
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        resetRuntime();
         waitForStart();
         //endregion
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            //region AimAssist Warning
             /**===================================================================================/*
             -------------------------------=AIM ASSIST INFO=--------------------------------------/*
             ======================================================================================/*
@@ -96,10 +104,14 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             =======INTERFERING WITH THE AIM ASSIST WILL CAUSE YOU TO LOSE MOTOR POWER AND YOU
                    WILL PROBABLY LOSE THE CONE AND SOME CONTROL FOR THE ROBOT================
              */
-            //Drive code
-            greenMotor.setPower(gamepad1.left_stick_y);
-            blackMotor.setPower(gamepad1.right_stick_y);
+            //endregion
 
+            //region Drive code
+            greenMotor.setPower(-gamepad1.left_stick_y);
+            blackMotor.setPower(-gamepad1.right_stick_y);
+            //endregion
+
+            //region Arm Motor Speed
             //Increase the motor speed for the arm by pressing the left bumper gamepad2
             if (gamepad2.left_bumper)
                 armMotorSpeed = armMotorSpeed + 0.1;
@@ -113,21 +125,26 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                 //If you try to make the motor speed lower then 0, set the speed to 0.0.
                 if (armMotorSpeed <= 0.0)
                     armMotorSpeed = 0.0;
+            //endregion
 
-            //Increase the motor speed for the wheels by pressing the left bumper on gamepad1
-            if (gamepad1.left_bumper)
-                wheelsMotorSpeed = wheelsMotorSpeed + 0.1;
-                //If you try to make the motor speed higher then 1.0, set the speed to 1.0.
-                if (wheelsMotorSpeed >= 1.0)
-                    wheelsMotorSpeed = 1.0;
+            //region Wheels Motor Speed
+//            //Increase the motor speed for the wheels by pressing the left bumper on gamepad1
+//            if (gamepad1.left_bumper)
+//                wheelsMotorSpeed = wheelsMotorSpeed + 0.1;
+//                //If you try to make the motor speed higher then 1.0, set the speed to 1.0.
+//                if (wheelsMotorSpeed >= 1.0)
+//                    wheelsMotorSpeed = 1.0;
+//
+//            //Decrease the motor speed for the wheels by pressing the right bumper on gamepad1
+//            if (gamepad1.right_bumper)
+//                wheelsMotorSpeed = wheelsMotorSpeed - 0.1;
+//                if (wheelsMotorSpeed <= 0.0)
+//                    //If you try to make the motor speed lower then 0, set the speed to 0.0.
+//                    wheelsMotorSpeed = 0.0;
+            //endregion
 
-            //Decrease the motor speed for the wheels by pressing the right bumper on gamepad1
-            if (gamepad1.right_bumper)
-                wheelsMotorSpeed = wheelsMotorSpeed - 0.1;
-                if (wheelsMotorSpeed <= 0.0)
-                    //If you try to make the motor speed lower then 0, set the speed to 0.0.
-                    wheelsMotorSpeed = 0.0;
 
+            //region Raise/Lower Arm
             //Raise the arm when you press the a button on gamepad2
             if (gamepad2.a)
                 armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -137,7 +154,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             if (gamepad2.b)
                 armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
                 armMotor.setPower(armMotorSpeed);
+            //endregion
 
+            if (gamepad2.y)
+
+
+            //region AimAssist
             //Toggle AimAssist when you press the x button on gamepad1
             if (gamepad1.x)
                 if (useAimAssist)
@@ -147,18 +169,17 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             //AimAssist code
             if (useAimAssist)
-                if (centerTouchSensor.getState())
-                    //not pressed
-                    return;
-                else if (!centerTouchSensor.getState())
+                if (!centerTouchSensor.getState())
                     //pressed
-                    aimAssistMotorSpeed = wheelsMotorSpeed / 3;
+                    aimAssistMotorSpeed = 1.0;
                     greenMotor.setPower(aimAssistMotorSpeed);
                     greenMotor.setDirection(DcMotorSimple.Direction.FORWARD);
                     blackMotor.setPower(aimAssistMotorSpeed);
                     blackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            //endregion
 
-            // Show the elapsed game time and wheel power.
+            // Show the elapsed game time and wheel power
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", greenMotor.getPower(), blackMotor.getPower());
             telemetry.update();
         }
     }}
