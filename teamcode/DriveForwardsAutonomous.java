@@ -40,13 +40,13 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@Autonomous(name="Autonomous 1", group="Autonomous")
-public class Autonomous1 extends LinearOpMode {
+@Autonomous(name="Drive Forwards", group="Autonomous")
+public class DriveForwardsAutonomous extends LinearOpMode {
 
 
     @SuppressLint("SuspiciousIndentation")
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
         AutonomousRobotActions robot = new AutonomousRobotActions();
 
@@ -64,8 +64,6 @@ public class Autonomous1 extends LinearOpMode {
 
         DigitalChannel centerTouchSensor  = hardwareMap.get (DigitalChannel.class, "centerTouchSensor");
 
-        boolean codeHasRun = false;
-
 
         //region telemetry
         // Wait for the game to start (driver presses PLAY)
@@ -75,8 +73,8 @@ public class Autonomous1 extends LinearOpMode {
         //endregion
         if (opModeInInit()){
 
-            greenMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            blackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            greenMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            blackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             centerTouchSensor.setMode(DigitalChannel.Mode.INPUT);
 
             greenMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -85,30 +83,17 @@ public class Autonomous1 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         if(opModeIsActive()) {
+
+
+
+            telemetry.addData("Action", "Going forward for 1/3 chance of points");
             robot.moveForward(5300, greenMotor, blackMotor);
             greenMotor.setPower(1.0);
             blackMotor.setPower(1.0);
             while(opModeIsActive() && greenMotor.isBusy()){
                 idle();
             }
-
-            robot.turnLeft(700 , greenMotor, blackMotor);
-            greenMotor.setPower(0.8);
-            blackMotor.setPower(1.0);
-            greenMotor.setPower(1.0);
-            while (opModeIsActive() && greenMotor.isBusy()){
-                idle();
-            }
-
-            robot.moveForward(500, greenMotor, blackMotor);
-            greenMotor.setPower(0.8);
-            blackMotor.setPower(1.0);
-            greenMotor.setPower(1.0);
-            while (opModeIsActive() && greenMotor.isBusy()){
-                idle();
-            }
-
-
+            telemetry.addData("Completion", "Past action completed");
 
             telemetry.update();
             greenMotor.setPower(0);

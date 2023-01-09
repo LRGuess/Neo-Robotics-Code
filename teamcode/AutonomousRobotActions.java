@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,8 +15,8 @@ public class AutonomousRobotActions {
         _greenMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _blackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        _greenMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        _blackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        _greenMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        _blackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         _greenMotor.setTargetPosition(duration);
         _blackMotor.setTargetPosition(duration);
@@ -90,11 +92,25 @@ public class AutonomousRobotActions {
 
     }
 
-    public void closeHand(Servo _rightHandServo, Servo _leftHandServo) throws InterruptedException{
+    public void closeHand(Servo _rightHandServo, Servo _leftHandServo){
 
     }
 
+    public void openHand(Servo _rightHandServo, Servo _leftHandServo){
 
+    }
+
+    public void storeHand(@NonNull Servo _rightHandServo, @NonNull Servo _leftHandServo){
+        _leftHandServo.setPosition(0);
+//        if (_leftHandServo.getPosition() == 0)
+//            _rightHandServo.setPosition(0);
+    }
+
+    public void releaseHand(@NonNull Servo _rightHandServo,@NonNull Servo _leftHandServo) {
+        _rightHandServo.setPosition(0.5);
+//        if (_rightHandServo.getPosition() == 0.5)
+//            _leftHandServo.setPosition(0.5);
+    }
 
     public void stop(DcMotor _greenMotor, DcMotor _blackMotor) {
         _greenMotor.setPower(0);

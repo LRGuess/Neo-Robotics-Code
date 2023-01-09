@@ -40,8 +40,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@Autonomous(name="Autonomous 1", group="Autonomous")
-public class Autonomous1 extends LinearOpMode {
+@Autonomous(name="Servo Test", group="Autonomous")
+public class ServoTest extends LinearOpMode {
 
 
     @SuppressLint("SuspiciousIndentation")
@@ -50,9 +50,6 @@ public class Autonomous1 extends LinearOpMode {
 
         AutonomousRobotActions robot = new AutonomousRobotActions();
 
-        DcMotor greenMotor = hardwareMap.get (DcMotor.class, "greenMotor");
-        DcMotor blackMotor = hardwareMap.get (DcMotor.class, "blackMotor");
-        DcMotor armMotor = hardwareMap.get (DcMotor.class, "armMotor");
 
         //left and right as in you are the robot!
         //servo 0 is right
@@ -61,58 +58,15 @@ public class Autonomous1 extends LinearOpMode {
         Servo leftHandServo = hardwareMap.get (Servo.class, "leftHandServo");
 
 
-
-        DigitalChannel centerTouchSensor  = hardwareMap.get (DigitalChannel.class, "centerTouchSensor");
-
-        boolean codeHasRun = false;
-
-
-        //region telemetry
-        // Wait for the game to start (driver presses PLAY)
         resetRuntime();
         waitForStart();
         telemetry.update();
         //endregion
-        if (opModeInInit()){
 
-            greenMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            blackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            centerTouchSensor.setMode(DigitalChannel.Mode.INPUT);
-
-            greenMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            blackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
 
         // run until the end of the match (driver presses STOP)
         if(opModeIsActive()) {
-            robot.moveForward(5300, greenMotor, blackMotor);
-            greenMotor.setPower(1.0);
-            blackMotor.setPower(1.0);
-            while(opModeIsActive() && greenMotor.isBusy()){
-                idle();
-            }
-
-            robot.turnLeft(700 , greenMotor, blackMotor);
-            greenMotor.setPower(0.8);
-            blackMotor.setPower(1.0);
-            greenMotor.setPower(1.0);
-            while (opModeIsActive() && greenMotor.isBusy()){
-                idle();
-            }
-
-            robot.moveForward(500, greenMotor, blackMotor);
-            greenMotor.setPower(0.8);
-            blackMotor.setPower(1.0);
-            greenMotor.setPower(1.0);
-            while (opModeIsActive() && greenMotor.isBusy()){
-                idle();
-            }
-
-
-
-            telemetry.update();
-            greenMotor.setPower(0);
-            blackMotor.setPower(0);
+            robot.releaseHand(rightHandServo, leftHandServo);
         }
     }
 }

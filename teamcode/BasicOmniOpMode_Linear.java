@@ -127,23 +127,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                     armMotorSpeed = 0.0;
             //endregion
 
-            //region Wheels Motor Speed
-//            //Increase the motor speed for the wheels by pressing the left bumper on gamepad1
-//            if (gamepad1.left_bumper)
-//                wheelsMotorSpeed = wheelsMotorSpeed + 0.1;
-//                //If you try to make the motor speed higher then 1.0, set the speed to 1.0.
-//                if (wheelsMotorSpeed >= 1.0)
-//                    wheelsMotorSpeed = 1.0;
-//
-//            //Decrease the motor speed for the wheels by pressing the right bumper on gamepad1
-//            if (gamepad1.right_bumper)
-//                wheelsMotorSpeed = wheelsMotorSpeed - 0.1;
-//                if (wheelsMotorSpeed <= 0.0)
-//                    //If you try to make the motor speed lower then 0, set the speed to 0.0.
-//                    wheelsMotorSpeed = 0.0;
-            //endregion
-
-
             //region Raise/Lower Arm
             //Raise the arm when you press the a button on gamepad2
             if (gamepad2.a)
